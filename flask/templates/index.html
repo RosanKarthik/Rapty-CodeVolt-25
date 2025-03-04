@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .dashboard {
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+            height: 600px;
+            background: url('/back1.jpg');
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .speedometer {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #222, #000);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .speedometer .value {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #00bfff;
+        }
+
+        .speedometer .unit {
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .speedometer.left .value {
+            color: #00ff00;
+        }
+
+        .speedometer.right .value {
+            color: #ff4500;
+        }
+
+        .center-info {
+            text-align: center;
+            color: #fff;
+        }
+
+        .center-info h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .center-info p {
+            font-size: 1.2rem;
+            margin: 5px 0;
+        }
+
+        .status-lights {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-light {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: gray;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .status-light.active {
+            background: green;
+            box-shadow: 0 0 15px green;
+        }
+
+        .mic-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #444;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .mic-button:hover {
+            background: #555;
+        }
+
+        .mic-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        #map-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        #toggle-map {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #toggle-map:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div id="map-container">
+        <button id="toggle-map">Close Map</button>
+        <div id="map"></div>
+    </div>
+
+    <div class="dashboard" id="dashboard-container">
+        <div class="speedometer left">
+            <div>
+                <div class="value" id="left-speed">90</div>
+                <div class="unit">km/h</div>
+            </div>
+        </div>
+
+        <div class="center-info">
+            <h1>Rapty</h1>
+            <p>Mode: Eco</p>
+            <p>Total Distance: 150 km</p>
+            <div class="status-lights">
+                <div class="status-light" id="light1"></div>
+                <div class="status-light" id="light2"></div>
+                <div class="status-light" id="light3"></div>
+            </div>
+        </div>
+
+        <div class="speedometer right">
+            <div>
+                <div class="value" id="right-speed">160</div>
+                <div class="unit">RPM</div>
+            </div>
+        </div>
+
+        <button class="mic-button" id="micButton">
+            🎤
+        </button>
+
+        <button id="toggle-map" class="map-toggle">Open Map</button>
+    </div>
+
+    <script>
+        function initMap() {
+            const directionsRenderer = new google.maps.DirectionsRenderer();
+            const directionsService = new google.maps.DirectionsService();
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 7,
+                center: { lat: 41.85, lng: -87.65 },
+            });
+
+            directionsRenderer.setMap(map);
+
+            const start = "Chicago, IL";
+            const end = "Los Angeles, CA";
+            directionsService.route({
+                origin: start,
+                destination: end,
+                travelMode: google.maps.TravelMode.DRIVING,
+            }).then(response => {
+                directionsRenderer.setDirections(response);
+            });
+        }
+
+        const toggleMap = () => {
+            const mapContainer = document.getElementById('map-container');
+            const dashboardContainer = document.getElementById('dashboard-container');
+            if (mapContainer.style.display === 'none') {
+                mapContainer.style.display = 'block';
+                dashboardContainer.style.display = 'none';
+            } else {
+                mapContainer.style.display = 'none';
+                dashboardContainer.style.display = 'flex';
+            }
+        };
+
+        document.getElementById('toggle-map').addEventListener('click', toggleMap);
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key.toLowerCase() === 'm') {
+                toggleMap();
+            }
+        });
+
+        const micButton = document.getElementById('micButton');
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordingTimeout;
+
+        const startRecording = () => {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.start();
+                    audioChunks = [];
+
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener('stop', () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const a = document.createElement('a');
+                        a.href = audioUrl;
+                        a.download = 'recording.wav';
+                        a.click();
+                    });
+
+                    alert('Recording started!');
+
+                    recordingTimeout = setTimeout(() => {
+                        if (mediaRecorder.state === 'recording') {
+                            mediaRecorder.stop();
+                            alert('Recording automatically stopped after 5 seconds!');
+                        }
+                    }, 5000);
+                })
+                .catch(error => alert('Microphone access denied.'));
+        };
+
+        const stopRecording = () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                clearTimeout(recordingTimeout);
+                mediaRecorder.stop();
+                alert('Recording stopped!');
+            }
+        };
+
+        const toggleRecording = () => {
+            if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        };
+
+        micButton.addEventListener('click', toggleRecording);
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key.toLowerCase() === 'q') {
+                toggleRecording();
+            }
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+            // Get references to the speed and RPM elements
+            const leftSpeedElement = document.getElementById("left-speed");
+            const rightSpeedElement = document.getElementById("right-speed");
+
+            // Function to update the speed and RPM dynamically
+            const updateDashboard = () => {
+                // Generate random values for speed and RPM
+                const speed = Math.floor(Math.random() * 121) + 30; // Speed range: 30-150 km/h
+                const rpm = Math.floor(Math.random() * 1001) + 1000; // RPM range: 1000-5000
+
+                // Update the text content of the elements
+                leftSpeedElement.textContent = speed;
+                rightSpeedElement.textContent = rpm;
+            };
+
+            // Update speed and RPM every second
+            setInterval(updateDashboard, 1000);
+        });
+
+    </script>
+
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjQxXBe_MUVTDT0b3Ib3pLaN0Vm9H5Qcs&callback=initMap"
+        defer
+    ></script>
+</body>
+</html>
