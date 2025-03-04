@@ -1,6 +1,7 @@
 ## Rapty CodeVolt'25
 
-#The API key used was replaced with a place holder YOURAPIKEY text for security reasons.
+###IMPORTANT The API key used was replaced with a place holder YOURAPIKEY text for security reasons.
+
 #This was done as a project for the two day hackathon, CodeVolt held by Raptee at VIT Chennai.
 
 
