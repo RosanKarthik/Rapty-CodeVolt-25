@@ -13,4 +13,6 @@ Deepseek's Deepseek R1 Distiled Qwen 1.5B model was used as the language model u
 
 Pytts was used for Text to Speech for speech output.
 
+Flask was used to implement frontend to this project with voice input facilities.
+
 The MapV2 and V2.1 are the versions that contain the GoogleMaps api that is integrated with the SLM. 
