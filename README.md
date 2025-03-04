@@ -1,4 +1,4 @@
-## Rapty-CodeVolt-25
+## Rapty CodeVolt'25
 
 #This was done as a project for the two day hackathon, CodeVolt held by Raptee at VIT Chennai.
 
